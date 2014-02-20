@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+02.
+<!DOCTYPE log4j:configuration SYSTEM "log4j.dtd">
+03.
+<log4j:configuration xmlns:log4j='http://jakarta.apache.org/log4j/'>
+    
+    <appender name="CA" class="org.apache.log4j.ConsoleAppender">
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="[5.DT]%d{yyyy-MM-dd HH:mm:ss,SSS}[5.PRI][%-5p]%X[5.THD][%t][5.CAT]%c[5.MES]%m%n" />
+        </layout>
+    </appender>
+    
+    <appender name="RA" class="org.apache.log4j.DailyRollingFileAppender">
+        <param name="file" value="../../../../logs/custserv.log" />
+        <param name="DatePattern" value="'.'yyyy-MM-dd" />
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="[5.DT]%d{yyyy-MM-dd HH:mm:ss,SSS}[5.PRI][%-5p]%X[5.THD][%t][5.CAT]%c[5.MES]%m%n" />
+        </layout>
+    </appender> 
+    
+    <!-- ALL > TRACE > DEBUG > INFO > WARN > ERROR > FATAL > OFF -->  
+       
+    <logger name="org.efoe.poc.custerv.domain">
+        <level value="debug" />
+    </logger>
+    
+    <logger name="org.efoe.poc.custerv.web">
+        <level value="debug" />
+    </logger>     
+    
+    <logger name="org.efoe.poc.custerv.utils">
+        <level value="debug" />
+    </logger>  
+    
+    <logger name="org.efoe.poc.custerv.services">
+        <level value="debug" />
+    </logger> 
+    
+</log4j:configuration>
