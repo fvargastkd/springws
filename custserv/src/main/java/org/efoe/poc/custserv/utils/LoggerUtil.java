@@ -14,7 +14,7 @@ import org.apache.log4j.xml.DOMConfigurator;
  */
 public class LoggerUtil extends Logger {
 
-    private static final String LOG4J_PATH = "";
+    private static final String LOG4J_PATH = "../../../../resources/log4j.xml";
 
     static {
         DOMConfigurator.configure(LOG4J_PATH);
