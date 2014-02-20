@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:p="http://www.springframework.org/schema/p"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xmlns:sws="http://www.springframework.org/schema/web-services"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.2.xsd
+       		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.2.xsd
+                http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-3.2.xsd
+                http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.2.xsd
+       		http://www.springframework.org/schema/web-services http://www.springframework.org/schema/web-services/web-services-2.0.xsd">
+   
+    <!-- Enable Spring Webservice Annotation -->
+    <sws:annotation-driven />
+    
+    <context:component-scan base-package="poc" />
+
+    <bean id="marshallPayloadMethodProcessor"
+          class="org.springframework.ws.server.endpoint.adapter.GenericMarshallingMethodEndpointAdapter">
+        
+        <property name="marshaller" ref="marshaller" />
+        <property name="unmarshaller" ref="marshaller" />
+    </bean>
+
+    <bean id="marshaller" class="org.springframework.oxm.xmlbeans.XmlBeansMarshaller" />
+
+    <sws:dynamic-wsdl id="custservice" portTypeName="CustomerService"
+                      locationUri="/ws/services/custservice"
+                      targetNamespace="http://www.customer.com/service">
+                              
+        <sws:xsd location="/schemas/Customer.xsd" />
+    </sws:dynamic-wsdl>
+        
+    <!-- <bean id="messageFactory" class="org.springframework.ws.soap.saaj.SaajSoapMessageFactory">
+        <description>A message factory to support SOAP 1.2</description>
+        <property name="soapVersion">
+            <util:constant static-field="org.springframework.ws.soap.SoapVersion.SOAP_11"/>
+        </property>
+    </bean> -->
+    <sws:interceptors>
+        <bean id="validatingInterceptor"
+              class="org.springframework.ws.soap.server.endpoint.interceptor.PayloadValidatingInterceptor">
+            <property name="schema" value="/schemas/Customer.xsd"/>
+            <property name="validateRequest" value="true"/>
+            <property name="validateResponse" value="true"/>
+        </bean>
+        
+        <bean class="org.springframework.ws.soap.security.wss4j.Wss4jSecurityInterceptor">
+            <property name="validationActions" value="UsernameToken"/>
+            <property name="securementActions" value="Timestamp UsernameToken"/>
+            <property name="timestampPrecisionInMilliseconds" value="true"/>
+            <property name="securementUsername" value="mojo"/>
+            <property name="securementPassword" value="mojopass"/>
+            <property name="securementPasswordType" value="PasswordText"/>
+            <property name="securementUsernameTokenElements" value="Nonce Created"/>
+            <property name="validationCallbackHandler" ref="callbackHandler" />
+        </bean>
+        
+        <bean id="loggingInterceptor" class="org.springframework.ws.server.endpoint.interceptor.PayloadLoggingInterceptor"/>
+    </sws:interceptors>
+    
+    <bean id="callbackHandler" class="org.springframework.ws.soap.security.wss4j.callback.SimplePasswordValidationCallbackHandler">
+        <property name="users">
+            <props>
+                <prop key="admin">secret</prop>
+                <prop key="user">pass</prop>
+            </props>
+        </property>
+    </bean>
+
+    
+</beans>
