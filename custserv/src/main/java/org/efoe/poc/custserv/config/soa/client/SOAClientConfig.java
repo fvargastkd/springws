@@ -28,7 +28,7 @@ public class SOAClientConfig {
     private static final String USERNAME = "";
     private static final String PASSWORD = "";
     
-    @Bean
+    @Bean(name="template")
     public WebServiceTemplate template(){
         WebServiceTemplate template = new WebServiceTemplate();
         template.setDefaultUri(ENDPOINT);
